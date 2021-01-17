@@ -1,0 +1,27 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "userId": "nara",
+      "password": "1234",
+      "nickname": "깜상",
+      "token": "1234"
+    },
+    {
+      "nickname": "실버",
+      "userId": "silvertown",
+      "password": "1234",
+      "token": 9660,
+      "id": 2
+    }
+  ],
+  "posts": [
+    {
+      "id": "nara",
+      "title": "부산여행",
+      "url": "www.naver.com",
+      "desc": "한슬이와 함께하는 부산여행",
+      "date": "2021-01-12"
+    }
+  ]
+}
