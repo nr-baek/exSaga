@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ScheduleOutlined } from '@ant-design/icons';
+import authBg from '../../img/bgImg.jpeg';
 
 const AuthTemplateBlock = styled.div`
   /* 화면 전체를 채움 */
@@ -10,7 +11,7 @@ const AuthTemplateBlock = styled.div`
   right: 0;
   bottom: 0;
   background: #dfe4ff;
-  background-image: url('https://images.unsplash.com/photo-1549880181-56a44cf4a9a5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80');
+  background-image: url(${authBg});
   /* background-image: url('https://images.unsplash.com/photo-1511351058023-d8980bd46282?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1951&q=80'); */
   background-size: cover;
   /* flex로 내부 중앙정렬 */
@@ -58,9 +59,6 @@ const TemplateLeftBox = styled.div`
   .logo {
     font-size: 8rem;
     margin: 2rem;
-  }
-  .none {
-    display: none;
   }
   .show {
   }
@@ -124,7 +122,7 @@ const TemplateRightBox = styled.div`
   .showRegister {
     animation: showToLeftAni 200ms linear normal forwards;
   }
-  .noneRegister {
+  .showRegister.noneRegister {
     animation: disappearToRightAni 200ms linear normal forwards;
   }
 `;
@@ -135,7 +133,7 @@ const TemplateLeft = () => {
       <ScheduleOutlined className="logo" />
       <h1>Hi, Traveler</h1>
       <p>Make a travel schedule!</p>
-      <small>&copy;By Rungak</small>
+      <small>&copy;by Rungak</small>
     </TemplateLeftBox>
   );
 };

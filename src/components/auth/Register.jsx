@@ -6,34 +6,9 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 
 const StyledContainer = styled.div`
-  @keyframes displayNoneAni {
-    0% {
-      opacity: 1;
-      transform: translate(-30px, 0);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(0, 0);
-    }
-  }
-  @keyframes displayShowAni {
-    0% {
-      opacity: 0;
-      transform: translate(30px, 0);
-    }
-    100% {
-      opacity: 1;
-      transform: translate(0, 0);
-    }
-  }
   h2 {
     color: #444;
     margin: 30px 0 1.3rem 0;
-  }
-  .signinMsg {
-    padding: 1rem 0;
-    float: left;
-    color: #666;
   }
   .backIcon {
     font-size: 1.5rem;
@@ -69,15 +44,17 @@ const Register = ({ onChange, onSubmit, form, error, history }) => {
       <form onSubmit={onSubmit}>
         <h2>Sign Up</h2>
         <StyledInput
-          name="userId"
+          name="id"
           placeholder="Id"
           onChange={onChange}
-          value={form.userId}
+          autoComplete="off"
+          value={form.id}
         />
         <StyledInput
           name="nickname"
           placeholder="Nickname"
           onChange={onChange}
+          autoComplete="off"
           value={form.nickname}
         />
         <StyledInput

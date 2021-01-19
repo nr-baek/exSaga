@@ -39,7 +39,15 @@ const SignUpButton = styled.button`
   }
 `;
 
-const Login = ({ onChange, form, onSubmit, history }) => {
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: left;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  position: absolute;
+`;
+
+const Login = ({ form, error, onChange, onSubmit, history }) => {
   const [isclickedSignup, setclicked] = useState(false);
 
   function onClick() {
@@ -57,10 +65,11 @@ const Login = ({ onChange, form, onSubmit, history }) => {
       <form onSubmit={onSubmit}>
         <h2>Sign in</h2>
         <StyledInput
-          name="userId"
+          name="id"
           placeholder="Id"
           onChange={onChange}
-          value={form.userId}
+          autoComplete="off"
+          value={form.id}
         />
         <StyledInput
           name="password"
@@ -69,6 +78,7 @@ const Login = ({ onChange, form, onSubmit, history }) => {
           onChange={onChange}
           value={form.password}
         />
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <p className="signinMsg">Let's plan a trip!</p>
         <SignInButton>Sign in</SignInButton>
       </form>

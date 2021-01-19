@@ -2,12 +2,6 @@ import { call, put } from 'redux-saga/effects';
 import { finishLoading, startLoading } from '../redux/modules/loading';
 import * as authAPI from './api/auth';
 
-// 토큰 생성 함수
-const createToken = () => {
-  return Math.random() * 10000;
-  //Math.ceil(createToken());
-};
-
 export const createRequestActionTypes = (type) => {
   const SUCCESS = `${type}_SUCCESS`;
   const FAILURE = `${type}_FAILURE`;
@@ -16,36 +10,32 @@ export const createRequestActionTypes = (type) => {
 
 export function createRegisterSaga(type) {
   const SUCCESS = `${type}_SUCCESS`;
-  const FAILUE = `${type}_FAILURE`;
+  const FAILURE = `${type}_FAILURE`;
 
   return function* (action) {
     yield put(startLoading(type));
-    console.log(action.payload.userId);
+    console.log(action.payload.id);
     try {
-      const check = yield call(authAPI.checkRegister, action.payload.userId);
+      const check = yield call(authAPI.checkRegister, action.payload.id);
       if (check.data.length === 0) {
-        const token = Math.ceil(createToken());
-        const response = yield call(authAPI.register, {
+        console.log(action.payload);
+        yield call(authAPI.register, {
           ...action.payload,
-          token,
         });
         yield put({
           type: SUCCESS,
-          payload: response.data.token,
-          error: null,
+          payload: { registerCheck: true },
         });
       } else {
         yield put({
-          type: FAILUE,
-          payload: { errorType: 409 },
-          error: true,
+          type: FAILURE,
+          payload: { registerCheck: 'overlap' },
         });
       }
     } catch (e) {
       yield put({
-        type: FAILUE,
-        payload: e,
-        error: true,
+        type: FAILURE,
+        payload: { registerCheck: 'register fail' },
       });
     }
     yield put(finishLoading(type));
@@ -60,47 +50,50 @@ export function createLoginSaga(type) {
     yield put(startLoading(type));
     try {
       const response = yield call(authAPI.login, action.payload);
-      console.log(response.data[0].token);
-      sessionStorage.setItem('token', response.data[0].token);
+      console.log(response.data[0].id);
+      sessionStorage.setItem('token', response.data[0].id);
       yield put({
         type: SUCCESS,
-        payload: response.data[0].token,
+        payload: {
+          token: response.data[0].id,
+          loginCheck: true,
+        },
       });
     } catch (e) {
       yield put({
         type: FAILUE,
-        payload: e,
-        error: true,
+        payload: { loginCheck: false },
+        // error: e,
       });
     }
     yield put(finishLoading(type));
   };
 }
 
-export function createCheckSaga(type) {
-  const SUCCESS = `${type}_SUCCESS`;
-  const FAILUE = `${type}_FAILURE`;
+// export function createCheckSaga(type) {
+//   const SUCCESS = `${type}_SUCCESS`;
+//   const FAILUE = `${type}_FAILURE`;
 
-  return function* (action) {
-    yield put(startLoading(type));
-    try {
-      const response = yield call(authAPI.check, action.payload);
-      console.log(response.data[0].token);
-      if (response.data[0].token === 0) {
-        return;
-      } else {
-        yield put({
-          type: SUCCESS,
-          payload: response.data[0].token,
-        });
-      }
-    } catch (e) {
-      yield put({
-        type: FAILUE,
-        payload: e,
-        error: true,
-      });
-    }
-    yield put(finishLoading(type));
-  };
-}
+//   return function* (action) {
+//     yield put(startLoading(type));
+//     try {
+//       const response = yield call(authAPI.check, action.payload);
+//       console.log(response.data[0].id);
+//       if (response.data[0].id === 0) {
+//         return;
+//       } else {
+//         yield put({
+//           type: SUCCESS,
+//           payload: response.data[0].token,
+//         });
+//       }
+//     } catch (e) {
+//       yield put({
+//         type: FAILUE,
+//         payload: e,
+//         error: true,
+//       });
+//     }
+//     yield put(finishLoading(type));
+//   };
+// }

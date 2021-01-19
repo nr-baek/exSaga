@@ -3,16 +3,14 @@ import Login from '../../components/auth/Login';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm, login } from '../../redux/modules/auth';
 import { withRouter } from 'react-router-dom';
-import { check } from '../../redux/modules/user';
 
 const LoginForm = ({ history }) => {
-  const dispatch = useDispatch();
   const [error, setError] = useState(null);
-  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+  const dispatch = useDispatch();
+  const { form, token, loginCheck } = useSelector(({ auth }) => ({
     form: auth.login,
-    auth: auth.auth,
-    authError: auth.authError,
-    user: user.user,
+    token: auth.token,
+    loginCheck: auth.loginCheck,
   }));
   // 인풋 변경 이벤트 핸들러
   const onChange = (e) => {
@@ -29,9 +27,13 @@ const LoginForm = ({ history }) => {
   // 폼 등록 이벤트 핸들러
   const onSubmit = (e) => {
     e.preventDefault();
-    const { userId, password } = form;
-    console.log(userId, password);
-    dispatch(login({ userId, password }));
+    const { id, password } = form;
+    console.log(id, password);
+    if ([id, password].includes('')) {
+      setError('빈 칸을 모두 입력하세요.');
+      return;
+    }
+    dispatch(login({ id, password }));
   };
 
   useEffect(() => {
@@ -39,28 +41,22 @@ const LoginForm = ({ history }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (authError) {
-      console.log('오류 발생');
-      console.log(authError);
-      setError('로그인 실패');
+    if (loginCheck === false) {
+      console.log('login 오류 발생');
+      setError('존재하지 않는 회원입니다.');
       return;
     }
-    if (auth) {
+    if (token && loginCheck) {
       console.log('로그인 성공');
-      dispatch(check(auth));
-    }
-  }, [auth, authError, dispatch, history]);
-
-  useEffect(() => {
-    if (user) {
-      history.push('/');
       try {
-        sessionStorage.setItem('token', JSON.stringify(user));
+        sessionStorage.setItem('token', JSON.stringify(form.id));
+
+        history.push('/');
       } catch (e) {
-        console.log('localStorage is not working');
+        console.log('sessionStorage is not working');
       }
     }
-  }, [history, user]);
+  }, [token, history, form.id, loginCheck]);
 
   return (
     <Login form={form} onChange={onChange} onSubmit={onSubmit} error={error} />

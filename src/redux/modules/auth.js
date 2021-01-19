@@ -10,17 +10,18 @@ import { takeLatest } from 'redux-saga/effects';
 // 초기 상태
 const initialState = {
   register: {
-    userId: '',
+    id: '',
     nickname: '',
     password: '',
     passwordConfirm: '',
   },
   login: {
-    userId: '',
+    id: '',
     password: '',
   },
-  auth: null,
-  authError: null,
+  token: null,
+  registerCheck: null,
+  loginCheck: null,
 };
 
 // 액션 타입 정의
@@ -49,15 +50,15 @@ export const changeField = createAction(
 
 export const initializeForm = createAction(INITIALIZE_FORM);
 
-export const login = createAction(LOGIN, ({ userId, password }) => ({
-  userId,
+export const login = createAction(LOGIN, ({ id, password }) => ({
+  id,
   password,
 }));
 
 export const register = createAction(
   REGISTER,
-  ({ userId, password, nickname }) => ({
-    userId,
+  ({ id, password, nickname }) => ({
+    id,
     password,
     nickname,
   }),
@@ -80,31 +81,30 @@ const auth = handleActions(
     [INITIALIZE_FORM]: (state, { payload: form }) => ({
       ...state,
       [form]: initialState[form],
-      authError: null,
+      registerCheck: null,
+      loginCheck: null,
     }),
     // 회원가입 성공
-    [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
+    [REGISTER_SUCCESS]: (state, { payload: { registerCheck } }) => ({
       ...state,
-      authError: null,
-      auth,
+      registerCheck,
     }),
     // 회원가입 실패
-    [REGISTER_FAILURE]: (state, { payload: error }) => ({
+    [REGISTER_FAILURE]: (state, { payload: { registerCheck } }) => ({
       ...state,
-      auth: null,
-      authError: error,
+      registerCheck,
     }),
     // 로그인 성공
-    [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
+    [LOGIN_SUCCESS]: (state, { payload: { token, loginCheck } }) => ({
       ...state,
-      authError: null,
-      auth,
+      loginCheck,
+      token,
     }),
     // 로그인 실패
-    [LOGIN_FAILURE]: (state, { payload: error }) => ({
+    [LOGIN_FAILURE]: (state, { payload: { loginCheck } }) => ({
       ...state,
-      auth: null,
-      authError: error,
+      token: null,
+      loginCheck,
     }),
   },
   initialState,

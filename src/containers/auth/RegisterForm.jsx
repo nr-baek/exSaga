@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Register from '../../components/auth/Register';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { check } from '../../redux/modules/user';
 import {
   changeField,
   register,
@@ -12,11 +11,9 @@ import {
 const RegisterForm = ({ history }) => {
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+  const { form, registerCheck } = useSelector(({ auth }) => ({
     form: auth.register,
-    auth: auth.auth,
-    authError: auth.authError,
-    user: user.user,
+    registerCheck: auth.registerCheck,
   }));
 
   const onChange = (e) => {
@@ -32,9 +29,9 @@ const RegisterForm = ({ history }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const { userId, password, passwordConfirm, nickname } = form;
+    const { id, password, passwordConfirm, nickname } = form;
     // 하나라도 비어 있다면
-    if ([userId, password, passwordConfirm].includes('')) {
+    if ([id, password, passwordConfirm].includes('')) {
       setError('빈 칸을 모두 입력하세요.');
       return;
     }
@@ -46,7 +43,7 @@ const RegisterForm = ({ history }) => {
       );
       return;
     }
-    dispatch(register({ userId, password, nickname }));
+    dispatch(register({ id, password, nickname }));
   };
 
   useEffect(() => {
@@ -55,34 +52,18 @@ const RegisterForm = ({ history }) => {
 
   // 회원가입 성공/실패 처리
   useEffect(() => {
-    if (authError) {
+    if (registerCheck === true) {
+      console.log('회원가입 성공');
+      history.push('/login');
+    } else if (registerCheck === 'overlap') {
       // 계정명이 이미 존재할 때
-      if (authError.errorType === 409) {
-        setError('이미 존재하는 ID입니다.');
-        return;
-      }
+      setError('이미 존재하는 ID입니다.');
+    } else if (registerCheck === 'register fail') {
       //기타 이유
       setError('회원가입 실패');
-      return;
     }
-    if (auth) {
-      console.log('회원가입 성공');
-      console.log(auth);
-      dispatch(check());
-    }
-  }, [auth, authError, dispatch]);
+  }, [registerCheck, dispatch, history, error]);
 
-  // user값이 잘 설정되었는지 확인
-  useEffect(() => {
-    if (user) {
-      history.push('/');
-      try {
-        sessionStorage.setItem('token', JSON.stringify(user));
-      } catch (e) {
-        console.log('localStorage is not working');
-      }
-    }
-  }, [history, user]);
   return (
     <Register
       form={form}

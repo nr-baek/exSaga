@@ -8,17 +8,15 @@ import Error from './pages/Error';
 import { Provider } from 'react-redux';
 import { ErrorBoundary } from 'react-error-boundary';
 import store from './redux/store';
-import { check, tempSetUser } from './redux/modules/user';
 
 function loadUser() {
   try {
     const token = sessionStorage.getItem('token');
     if (!token) return;
 
-    store.dispatch(tempSetUser(token));
-    store.dispatch(check(token));
+    store.dispatch({ type: 'auth/LOGIN_SUCCESS', payload: token });
   } catch (e) {
-    console.log('localStorage is not working');
+    console.log('SessionStorage is not working');
   }
 }
 loadUser();
